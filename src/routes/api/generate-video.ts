@@ -16,7 +16,8 @@ const PayloadSchema = z.object({
   quantity: z.number().int().min(1).max(10).default(1),
   audio_url: z.string().url().optional(),
   image_count: z.number().int().min(1).max(20).optional().default(8),
-});
+  mode: z.enum(["auto", "custom"]).optional().default("auto"),
+  objective: z.string().max(40).optional().default("monetize"),
 
 const VIDEO_SERVER_URL = "http://163.176.247.97:3000/create-video";
 const N8N_WEBHOOK_URL = "https://viralflowaipro.app.n8n.cloud/webhook/viralflow";
