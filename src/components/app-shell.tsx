@@ -9,7 +9,7 @@ import {
   LayoutDashboard,
   LogOut,
   Plug,
-  Repeat,
+  
   Settings,
   Shield,
   Sparkles,
