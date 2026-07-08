@@ -181,13 +181,15 @@ function Generator() {
         body: JSON.stringify({
           niche,
           topic,
-          prompt,
+          prompt: mode === "custom" ? prompt : "",
           cta,
           platform: selected[0],
           platforms: selected,
           quantity,
           reference_images: images.map((i) => i.url),
           image_count: 8,
+          mode,
+          objective,
         }),
       });
       const json = await res.json();
