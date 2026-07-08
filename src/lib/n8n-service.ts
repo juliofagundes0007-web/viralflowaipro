@@ -7,7 +7,7 @@
  */
 
 export const N8N_WEBHOOK_URL =
-  "https://viralflowai-production-production.up.railway.app/webhook/viralflow";
+  "https://viralflowaipro.app.n8n.cloud/webhook/viralflow";
 
 export type N8nAction =
   | "generate_content"
