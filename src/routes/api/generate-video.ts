@@ -16,10 +16,13 @@ const PayloadSchema = z.object({
   quantity: z.number().int().min(1).max(10).default(1),
   audio_url: z.string().url().optional(),
   image_count: z.number().int().min(1).max(20).optional().default(8),
+  mode: z.enum(["auto", "custom"]).optional().default("auto"),
+  objective: z.string().max(40).optional().default("monetize"),
 });
 
-const VIDEO_SERVER_URL =
-  "https://viralflowai-edge-tts-production.up.railway.app/create-video";
+
+const VIDEO_SERVER_URL = "http://163.176.247.97:3000/create-video";
+const N8N_WEBHOOK_URL = "https://viralflowaipro.app.n8n.cloud/webhook/viralflow";
 
 const cors = {
   "Access-Control-Allow-Origin": "*",
@@ -68,6 +71,7 @@ export const Route = createFileRoute("/api/generate-video")({
         const {
           niche, topic, prompt, reference_images, cta,
           platform, platforms, quantity, audio_url, image_count,
+          mode, objective,
         } = parsed.data;
 
         // 1) create job
@@ -107,31 +111,47 @@ export const Route = createFileRoute("/api/generate-video")({
         }));
         await supabaseAdmin.from("videos").insert(rows);
 
-        // 3) call dedicated video server
+        // 3) dispatch to n8n orchestrator (n8n owns TTS + create-video)
         const script = (prompt && prompt.trim()) || topic;
-        const serverPayload = {
-          audioUrl: audio_url ?? "",
+        const n8nPayload = {
+          job_id: job.id,
+          user_id: userId,
+          niche,
+          topic,
           script,
-          topic: niche || topic,
-          imageCount: image_count,
+          cta,
+          prompt,
+          platform,
+          platforms: platforms.length ? platforms : [platform],
+          quantity,
+          reference_images,
+          audio_url: audio_url ?? null,
+          image_count,
+          mode,
+          objective,
+          servers: {
+            tts: "http://163.176.247.97:3000/tts",
+            create_video: VIDEO_SERVER_URL,
+          },
         };
 
         let externalJobId: string | null = null;
         let serverStatus: "queued" | "failed" = "failed";
         let serverError: string | null = null;
         try {
-          const res = await fetch(VIDEO_SERVER_URL, {
+          const res = await fetch(N8N_WEBHOOK_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(serverPayload),
+            body: JSON.stringify(n8nPayload),
           });
           const text = await res.text();
           let json: Record<string, unknown> = {};
           try { json = text ? JSON.parse(text) : {}; } catch { /* keep raw */ }
           if (!res.ok) {
-            serverError = `Server returned ${res.status}: ${text.slice(0, 300)}`;
+            serverError = `n8n returned ${res.status}: ${text.slice(0, 300)}`;
           } else {
-            externalJobId = (json.job_id as string) ?? (json.id as string) ?? null;
+            externalJobId =
+              (json.job_id as string) ?? (json.id as string) ?? job.id;
             serverStatus = "queued";
           }
         } catch (e) {
@@ -147,8 +167,8 @@ export const Route = createFileRoute("/api/generate-video")({
             payload: {
               external_job_id: externalJobId,
               platforms: platforms.length ? platforms : [platform],
-              server: "railway:create-video",
-              sent: serverPayload,
+              server: "n8n:viralflow",
+              sent: n8nPayload,
             },
           })
           .eq("id", job.id);
@@ -159,8 +179,8 @@ export const Route = createFileRoute("/api/generate-video")({
           level: serverStatus === "queued" ? "info" : "error",
           message:
             serverStatus === "queued"
-              ? `Video server aceitou job ${externalJobId ?? "?"}`
-              : `Video server falhou: ${serverError ?? "unknown"}`,
+              ? `n8n aceitou job ${externalJobId ?? "?"}`
+              : `n8n falhou: ${serverError ?? "unknown"}`,
           metadata: { external_job_id: externalJobId, platform, niche },
         });
 
