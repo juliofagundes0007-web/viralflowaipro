@@ -49,7 +49,6 @@ export function AppShell({ children, user }: { children: ReactNode; user: User }
   const nav = useMemo(() => {
     const items: Array<{ to: string; label: string; icon: typeof LayoutDashboard }> = [...baseNav];
     if (adminData?.isAdmin) {
-      items.push({ to: "/integrations", label: "Integrações", icon: Plug });
       items.push({ to: "/admin", label: "Admin", icon: Shield });
     }
     return items;
