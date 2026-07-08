@@ -45,7 +45,18 @@ const PLATFORM_META = [
   { id: "rumble", name: "Rumble", icon: Flame, color: "text-emerald-500" },
 ] as const;
 
+const OBJECTIVES = [
+  { id: "monetize", label: "Monetizar Canal" },
+  { id: "sell", label: "Vender Produto" },
+  { id: "grow", label: "Crescer Perfil" },
+  { id: "leads", label: "Gerar Leads" },
+  { id: "traffic", label: "Tráfego" },
+  { id: "auto", label: "Automatizar Conteúdo" },
+] as const;
+
 function Generator() {
+  const [mode, setMode] = useState<"auto" | "custom">("auto");
+  const [objective, setObjective] = useState<string>("monetize");
   const [niche, setNiche] = useState("");
   const [topic, setTopic] = useState("");
   const [prompt, setPrompt] = useState("");
