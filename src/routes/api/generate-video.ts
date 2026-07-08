@@ -71,6 +71,7 @@ export const Route = createFileRoute("/api/generate-video")({
         const {
           niche, topic, prompt, reference_images, cta,
           platform, platforms, quantity, audio_url, image_count,
+          mode, objective,
         } = parsed.data;
 
         // 1) create job
