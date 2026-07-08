@@ -18,8 +18,8 @@ const PayloadSchema = z.object({
   image_count: z.number().int().min(1).max(20).optional().default(8),
 });
 
-const VIDEO_SERVER_URL =
-  "https://viralflowai-edge-tts-production.up.railway.app/create-video";
+const VIDEO_SERVER_URL = "http://163.176.247.97:3000/create-video";
+const N8N_WEBHOOK_URL = "https://viralflowaipro.app.n8n.cloud/webhook/viralflow";
 
 const cors = {
   "Access-Control-Allow-Origin": "*",
