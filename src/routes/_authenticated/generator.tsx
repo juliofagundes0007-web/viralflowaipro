@@ -248,6 +248,57 @@ function Generator() {
 
       <Card className="p-6 bg-gradient-surface border-border/60 shadow-card">
         <form onSubmit={submit} className="space-y-5">
+          {/* Modo de geração */}
+          <div className="space-y-2">
+            <Label>Modo de geração</Label>
+            <div className="grid grid-cols-2 gap-2">
+              {(["auto", "custom"] as const).map((m) => (
+                <button
+                  type="button"
+                  key={m}
+                  onClick={() => setMode(m)}
+                  className={cn(
+                    "rounded-lg border px-3 py-2.5 text-sm text-left transition",
+                    mode === m
+                      ? "border-primary bg-primary/10 shadow-glow"
+                      : "border-border/60 hover:bg-muted/30",
+                  )}
+                >
+                  <div className="font-medium">
+                    {m === "auto" ? "Automático" : "Personalizado"}
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    {m === "auto"
+                      ? "IA cria roteiro, narração e vídeo"
+                      : "Use seu roteiro, prompt e mídia"}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Objetivo do vídeo */}
+          <div className="space-y-2">
+            <Label>Qual é seu objetivo?</Label>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              {OBJECTIVES.map((o) => (
+                <button
+                  type="button"
+                  key={o.id}
+                  onClick={() => setObjective(o.id)}
+                  className={cn(
+                    "rounded-lg border px-3 py-2 text-xs transition",
+                    objective === o.id
+                      ? "border-primary bg-primary/10 text-primary-glow"
+                      : "border-border/60 hover:bg-muted/30",
+                  )}
+                >
+                  {o.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="niche">Nicho</Label>
@@ -271,19 +322,21 @@ function Generator() {
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="prompt" className="flex items-center gap-2">
-              <Sparkles className="size-4 text-primary-glow" />
-              Prompt do vídeo
-            </Label>
-            <Textarea
-              id="prompt"
-              rows={5}
-              placeholder="Descreva como deve ser o vídeo: roteiro, estilo visual, narração, ritmo, mood…"
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-            />
-          </div>
+          {mode === "custom" && (
+            <div className="space-y-2">
+              <Label htmlFor="prompt" className="flex items-center gap-2">
+                <Sparkles className="size-4 text-primary-glow" />
+                Seu roteiro / prompt
+              </Label>
+              <Textarea
+                id="prompt"
+                rows={5}
+                placeholder="Cole seu roteiro ou prompt personalizado…"
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+              />
+            </div>
+          )}
 
           <div className="space-y-2">
             <Label className="flex items-center justify-between">
