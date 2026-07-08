@@ -1,8 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
-const STATUS_BASE =
-  "https://viralflowai-edge-tts-production.up.railway.app/status";
+const STATUS_BASE = "http://163.176.247.97:3000/status";
 
 const cors = {
   "Access-Control-Allow-Origin": "*",
