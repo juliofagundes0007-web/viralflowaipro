@@ -127,6 +127,8 @@ export const Route = createFileRoute("/api/generate-video")({
           reference_images,
           audio_url: audio_url ?? null,
           image_count,
+          mode,
+          objective,
           servers: {
             tts: "http://163.176.247.97:3000/tts",
             create_video: VIDEO_SERVER_URL,
