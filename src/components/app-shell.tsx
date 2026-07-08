@@ -27,7 +27,6 @@ const baseNav = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/generator", label: "Gerador", icon: Wand2 },
   { to: "/generation", label: "Processando", icon: Activity },
-  { to: "/automation", label: "Automação", icon: Repeat },
   { to: "/history", label: "Histórico", icon: History },
   { to: "/schedule", label: "Agenda", icon: Calendar },
   { to: "/settings/integrations", label: "Conectar redes", icon: Plug },
