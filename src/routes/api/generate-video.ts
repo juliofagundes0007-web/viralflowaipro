@@ -22,7 +22,7 @@ const PayloadSchema = z.object({
 
 
 const VIDEO_SERVER_URL = "http://163.176.247.97:3000/create-video";
-const N8N_WEBHOOK_URL = "https://viralflowaipro.app.n8n.cloud/webhook/viralflow";
+const N8N_WEBHOOK_URL = "https://flowviralpro.app.n8n.cloud/webhook/viralflow";
 
 const cors = {
   "Access-Control-Allow-Origin": "*",
